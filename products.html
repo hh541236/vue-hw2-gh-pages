@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>產品列表</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <style>
+    img {
+      object-fit: contain;
+      max-width: 100%;
+    }
+
+    .primary-image {
+      height: 300px;
+    }
+
+    .images {
+      height: 150px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="container">
+      <div class="row py-3">
+        <!-- 畫面左半部分 -->
+        <div class="col-md-6">
+          <h2>產品列表</h2>
+          <!-- 建立表格 -->
+          <table class="table table-hover mt-4">
+            <!-- 建立表投 -->
+            <thead>
+              <tr>
+                <th width="150">產品名稱</th>
+                <th width="120">
+                  原價
+                </th>
+                <th width="120">
+                  售價
+                </th>
+                <th width="150">
+                  是否啟用
+                </th>
+                <th width="120">
+                  查看細節
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- 使用 v-for 迴圈去跑 products 裡的資料 -->
+              <tr v-for="(item) in products" :key="item.id">
+                <!-- 建立產品名稱 -->
+                <td width="150">{{ item.title }}</td>
+                <!-- 原價 -->
+                <td width="120">
+                  NT$ {{ item.origin_price }}
+                </td>
+                <!-- 售價 -->
+                <td width="120">
+                  NT$ {{ item.price }}
+                </td>
+                <!-- 是否啟用 -->
+                <td width="150">
+                  <span v-if="item.is_enabled" class="text-success">啟用</span>
+                  <span v-else>未啟用</span>
+                </td>
+                <!-- 迴圈中在每項商品旁建立按鈕，當按下按鈕時，用openProduct(item)方法 將 "tempProduct" 的內容變為該品項的資料-->
+                <td width="120">
+                  <button type="button" class="btn btn-primary" @click="openProduct(item)">查看細節</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p>目前有 <span>{{ products.length }}</span> 項產品</p>
+        </div>
+        <!-- 右半部分 -->
+        <div class="col-md-6">
+          <h2>單一產品細節</h2>
+          <!-- 按下 click 按鈕後跑這邊，"tempProduct.title"就有值了 -->
+          <template v-if="tempProduct.title">
+            <div class="card mb-3">
+              <img :src="tempProduct.imageUrl" class="card-img-top primary-image" alt="主圖">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <!-- 該產品的名稱 -->
+                  {{ tempProduct.title }}
+                  <!-- 該產品的種類 -->
+                  <span class="badge bg-primary ms-2">{{ tempProduct.category }}</span>
+                </h5>
+                <!-- 該商品的描述 -->
+                <p class="card-text">商品描述：{{ tempProduct.description }}</p>
+                <!-- 該商品的內容 -->
+                <p class="card-text">商品內容：{{ tempProduct.content }}</p>
+                <!-- 讓資料在同一行 -->
+                <div class="d-flex">
+                  <!-- 該商品的售價 -->
+                  <p class="card-text me-2">{{ tempProduct.price }}</p>
+                  <!-- 該商品的原價格，"del" 為刪除線 -->
+                  <p class="card-text text-secondary"><del>{{ tempProduct.origin_price }}</del></p>
+                  <!-- 該商品的單位 -->
+                  {{ tempProduct.unit }} / 元
+                </div>
+              </div>
+            </div>
+            <template v-for="(image, id) in tempProduct.imagesUrl" :key="id">
+              <!-- 用 v-if 判斷，如果有圖片就印出 -->
+              <img v-if="image" :src="image" :alt="`副圖 ${id+1}`" class="images m-2">
+            </template>
+          </template>
+          <!-- 一開始還沒按下 click 按鈕跑這邊，v-if判斷，若 tempProduct.title 沒值跑下面的 code -->
+          <p v-else class="text-secondary">請選擇一個商品查看</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'
+    integrity='sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=='
+    crossorigin='anonymous'></script>
+  <script src="products.js" type="module"></script>
+</body>
+
+</html>
